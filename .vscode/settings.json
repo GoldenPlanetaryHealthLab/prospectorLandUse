@@ -1,0 +1,24 @@
+{
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "terminal.integrated.profiles.linux": {
+        "zsh": {
+            "path": "/bin/zsh"
+        }
+    },
+    "r.plot.useHttpgd": true,
+    "r.rterm.linux": "/opt/homebrew/bin/arf",
+    "r.rterm.mac": "/opt/homebrew/bin/arf",
+    // "r.useRenvLibPath": true,
+    "r.workspaceViewer.showObjectSize": true,
+    "livePreview.defaultPreviewPath": "/docs/index.html",
+    "r.bracketedPaste": true,
+    "r.sessionWatcher": true,
+    "r.alwaysUseActiveTerminal": true,
+    "r.rpath.linux": "/usr/local/bin/R",
+    "r.rpath.mac": "/usr/local/bin/R",
+    "r.libPaths": [
+        //"/Users/tit420/projects/nbdd/rv/library/4.5/arm64",
+        //"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library"
+    ]
+}

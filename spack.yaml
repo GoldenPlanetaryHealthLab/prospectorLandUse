@@ -17,6 +17,13 @@ spack:
   - sqlite
   - curl
   - git
+  - cmake
+  - gmake
+  - abseil-cpp
+  - openssl
+  - udunits
+  - libxml2
+  - libuv
   view: true
   concretizer:
     unify: true
