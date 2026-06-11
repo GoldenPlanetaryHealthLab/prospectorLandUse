@@ -26,8 +26,6 @@ export APPTAINER_CACHEDIR="$CACHE_DIR"
 export SINGULARITY_CACHEDIR="$CACHE_DIR"
 export APPTAINER_TMPDIR="$TMP_DIR"
 export SINGULARITY_TMPDIR="$TMP_DIR"
-export XDG_RUNTIME_DIR
-XDG_RUNTIME_DIR="$(mktemp -d "${TMP_DIR}/xdg-runtime-${SLURM_JOB_ID:-manual}.XXXXXX")"
 
 cleanup() {
   rm -rf "$XDG_RUNTIME_DIR"
@@ -61,11 +59,7 @@ du -sh "$PROJECT_ROOT" || true
 section "Build container from Dockerfile"
 cd "$BUILD_CONTEXT"
 
-singularity build \
-  --force \
-  --oci \
-  "$IMAGE_OUT" \
-  "$DOCKERFILE"
+XDG_RUNTIME_DIR="$(mktemp -d)" singularity build --oci "$IMAGE_OUT" "$DOCKERFILE"
 
 section "Inspect built image"
 ls -lh "$IMAGE_OUT"
