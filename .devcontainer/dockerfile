@@ -1,5 +1,5 @@
 # Build stage with Spack pre-installed and ready to be used
-FROM spack/ubuntu-jammy:develop AS builder
+FROM spack/ubuntu-jammy:latest AS builder
 
 
 # What we want to install and how we want to install it
@@ -13,7 +13,7 @@ set -o noclobber \
 &&   echo '  - r-terra' \
 &&   echo '  - r-sf' \
 &&   echo '  - r-exactextractr' \
-&&   echo '  - python@3.14' \
+&&   echo '  - python' \
 &&   echo '  - neovim' \
 &&   echo '  - gdal' \
 &&   echo '  - geos' \
@@ -36,7 +36,11 @@ set -o noclobber \
 &&   echo '      root: /opt/software') > /opt/spack-environment/spack.yaml
 
 # Install the software, remove unnecessary deps
-RUN cd /opt/spack-environment && spack env activate . && spack install --fail-fast && spack gc -y
+RUN . /opt/spack/share/spack/setup-env.sh && \
+    cd /opt/spack-environment && \
+    spack env activate . && \
+    spack install --fail-fast && \
+    spack gc -y
 
 # Strip all the binaries
 RUN find -L /opt/views/view/* -type f -exec readlink -f '{}' \; | \
@@ -46,7 +50,8 @@ RUN find -L /opt/views/view/* -type f -exec readlink -f '{}' \; | \
     awk -F: '{print $1}' | xargs strip
 
 # Modifications to the environment that are necessary to run
-RUN cd /opt/spack-environment && \
+RUN . /opt/spack/share/spack/setup-env.sh && \
+    cd /opt/spack-environment && \
     spack env activate --sh -d . > activate.sh
 
 
@@ -57,15 +62,30 @@ COPY --from=builder /opt/spack-environment /opt/spack-environment
 COPY --from=builder /opt/software /opt/software
 COPY --from=builder /opt/views /opt/views
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    bash \
+    locales \
+    libgomp1 \
+    libstdc++6 \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV PATH="/opt/views/view/bin:${PATH}"
+ENV R_HOME="/opt/views/view/rlib/R"
+ENV R_LIBS_USER="/work/rv/library"
+ENV PROJ_LIB="/opt/views/view/share/proj"
+ENV GDAL_DATA="/opt/views/view/share/gdal"
+ENV PKG_CONFIG_PATH="/opt/views/view/lib/pkgconfig:/opt/views/view/lib64/pkgconfig:/opt/views/view/share/pkgconfig"
+
 RUN { \
       echo '#!/bin/sh' \
-      && echo '.' /opt/spack-environment/activate.sh \
+      && echo '. /opt/spack-environment/activate.sh' \
       && echo 'exec "$@"'; \
     } > /entrypoint.sh \
 && chmod a+x /entrypoint.sh \
 && ln -s /opt/views/view /opt/view
 
+WORKDIR /work
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "/bin/bash" ]
-

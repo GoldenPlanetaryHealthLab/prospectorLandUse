@@ -9,7 +9,7 @@ spack:
   - r-terra
   - r-sf
   - r-exactextractr
-  - python@3.14
+  - python
   - neovim
   - gdal
   - geos
@@ -26,4 +26,4 @@ spack:
   - libuv
   view: true
   concretizer:
-    unify: true
+    unify: when_possible
