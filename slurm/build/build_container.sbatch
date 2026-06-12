@@ -70,8 +70,6 @@ section "Inspect built image"
 ls -lh "$IMAGE_OUT"
 singularity inspect "$IMAGE_OUT" || true
 
-section "rv Project Library Sync"
-
 section "Smoke test"
 singularity exec \
   --bind "$PROJECT_ROOT:/work" \
