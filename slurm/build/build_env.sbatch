@@ -4,15 +4,15 @@
 # Resources
 #SBATCH --partition=hsph
 #SBATCH --cpus-per-task=16
-#SBATCH --mem=24G
-#SBATCH --time=04:00:00
+#SBATCH --mem=12G
+#SBATCH --time=02:00:00
 
 # Logging
 #SBATCH --output=/n/holylabs/LABS/cgolden_lab/Lab/frontier/works/prospectors/prospectorLandUse/slurm/build/logs/build_%j.out
 #SBATCH --error=/n/holylabs/LABS/cgolden_lab/Lab/frontier/works/prospectors/prospectorLandUse/slurm/build/logs/build_%j.err
 
 # notifications
-#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-type=START,END,FAIL
 #SBATCH --mail-user=aaaapr3lk7gfdswioulcmvi3te@harvard.org.slack.com
 
 ###############################################################################

@@ -27,8 +27,13 @@ export SINGULARITY_CACHEDIR="$CACHE_DIR"
 export APPTAINER_TMPDIR="$TMP_DIR"
 export SINGULARITY_TMPDIR="$TMP_DIR"
 
+export XDG_RUNTIME_DIR
+XDG_RUNTIME_DIR="$(mktemp -d "${TMP_DIR}/xdg-runtime-${SLURM_JOB_ID:-manual}.XXXXXX")"
+
 cleanup() {
-  rm -rf "$XDG_RUNTIME_DIR"
+  if [[ -n "${XDG_RUNTIME_DIR:-}" && -d "$XDG_RUNTIME_DIR" ]]; then
+    rm -rf "$XDG_RUNTIME_DIR"
+  fi
 }
 trap cleanup EXIT
 
@@ -59,11 +64,13 @@ du -sh "$PROJECT_ROOT" || true
 section "Build container from Dockerfile"
 cd "$BUILD_CONTEXT"
 
-XDG_RUNTIME_DIR="$(mktemp -d)" singularity build --oci "$IMAGE_OUT" "$DOCKERFILE"
+singularity build --force --oci "$IMAGE_OUT" "$DOCKERFILE"
 
 section "Inspect built image"
 ls -lh "$IMAGE_OUT"
 singularity inspect "$IMAGE_OUT" || true
+
+section "rv Project Library Sync"
 
 section "Smoke test"
 singularity exec \

@@ -1,6 +1,8 @@
 # Build stage with Spack pre-installed and ready to be used
 FROM spack/ubuntu-jammy:latest AS builder
 
+ENV MAKEFLAGS="-j1"
+ENV R_MAKEVARS_USER="/dev/null"
 
 # What we want to install and how we want to install it
 # is specified in a manifest file (spack.yaml)
@@ -39,7 +41,9 @@ set -o noclobber \
 RUN . /opt/spack/share/spack/setup-env.sh && \
     cd /opt/spack-environment && \
     spack env activate . && \
-    spack install --fail-fast && \
+    export MAKEFLAGS="-j1" && \
+    export R_MAKEVARS_USER="/dev/null" && \
+    spack install --fail-fast -j1 && \
     spack gc -y
 
 # Strip all the binaries
