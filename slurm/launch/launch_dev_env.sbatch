@@ -8,6 +8,9 @@
 #SBATCH --output=/n/holylabs/LABS/cgolden_lab/Lab/frontier/works/prospectors/prospectorMahery/slurm/launch/logs/launch_%j.out
 #SBATCH --error=/n/holylabs/LABS/cgolden_lab/Lab/frontier/works/prospectors/prospectorMahery/slurm/launch/logs/launch_%j.err
 
+# Name
+#SBATCH --job-name=VSCode-ProspectorMahery
+
 set -o errexit -o nounset -o pipefail
 
 PROJECT_DIR="${PROJECT_DIR:-$SLURM_SUBMIT_DIR}"

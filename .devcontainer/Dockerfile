@@ -12,9 +12,6 @@ set -o noclobber \
 &&   echo '  # add package specs to the `specs` list' \
 &&   echo '  specs:' \
 &&   echo '  - r@4.5.1' \
-&&   echo '  - r-terra' \
-&&   echo '  - r-sf' \
-&&   echo '  - r-exactextractr' \
 &&   echo '  - python' \
 &&   echo '  - neovim' \
 &&   echo '  - gdal' \
@@ -72,6 +69,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     locales \
     libgomp1 \
     libstdc++6 \
+    wget \
+    gdebi-core \
+    xz-utils \
+    tar \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PATH="/opt/views/view/bin:${PATH}"
@@ -92,6 +93,7 @@ RUN { \
 WORKDIR /work
 
 RUN echo " ================= Installing arf =================== "
+ARG ARF_VERSION=0.4.0
 RUN set -eux; \
     case "${TARGETARCH:-amd64}" in \
       amd64) ARF_ARCH="x86_64-unknown-linux-gnu" ;; \
@@ -147,15 +149,12 @@ RUN set -eux; \
     test -n "$RV_BIN"; \
     install -m 0755 "$RV_BIN" /usr/local/bin/rv; \
     /usr/local/bin/rv --version
-RUN echo "installing R packages..."
-RUN rv sync
-
 
 # setup the vscode user and workspace
 RUN id -u vscode >/dev/null 2>&1 || useradd -m -s /bin/bash vscode
 USER vscode
 WORKDIR /home/vscode
-ENV PATH="/home/vscode/.local/bin:/home/vscode/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ENV PATH="/home/vscode/.local/bin:/home/vscode/.cargo/bin:/opt/views/view/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 RUN mkdir -p ~/.local/bin ~/.cargo
 
 # Neovim stable-ish binary

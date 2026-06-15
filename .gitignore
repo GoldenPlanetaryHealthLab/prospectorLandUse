@@ -332,3 +332,5 @@ tmbootpicker.efi
 .spack-env
 *.out
 *.err
+*.sif
+
